@@ -28,17 +28,29 @@ with tab3:
 
     st.markdown(
         "📝 **Leyenda:**\n"
-        "- Puntos: Puntos donde se registraron formularios virtuales\n"
+        "-  Puntos: Puntos donde se registraron formularios virtuales\n"
     )
 
-    mapa_path = "mapa_empadronamiento.html"
+    # Ruta al ZIP
+    zip_path = "mapa_empadronamiento.zip"
 
-    if os.path.exists(mapa_path):
-        with open(mapa_path, 'r', encoding='utf-8') as f:
-            html_content = f.read()
+    if os.path.exists(zip_path):
 
-        components.html(html_content, height=800, scrolling=True)
+        import zipfile
+
+        try:
+            # Abrir ZIP y leer el HTML internamente
+            with zipfile.ZipFile(zip_path, "r") as z:
+                with z.open("mapa_empadronamiento.html") as f:
+                    html_content = f.read().decode("utf-8")
+
+            # Mostrar el mapa en Streamlit
+            components.html(html_content, height=800, scrolling=True)
+
+        except Exception as e:
+            st.error(f"Error leyendo el archivo ZIP: {e}")
 
     else:
-        st.error(f"No se encontró el archivo '{mapa_path}'.")
-        st.info("Guarda el archivo como 'mapa_empadronamiento.html' en el mismo directorio.")
+        st.error(f"No se encontró '{zip_path}'. Súbelo a la carpeta data/.")
+
+
